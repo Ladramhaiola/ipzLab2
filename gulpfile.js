@@ -5,7 +5,8 @@ concat = require('gulp-concat'),
 babel = require('gulp-babel-minify'),
 rename = require('gulp-rename'),
 notify = require('gulp-notify'),
-del = require('del')
+del = require('del'),
+livereload = require('gulp-livereload')
 
 gulp.task('minify-html', ()=>{
     gulp.src('./assets/template/*.html')
