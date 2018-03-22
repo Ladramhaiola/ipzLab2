@@ -4,3 +4,5 @@ let factorial = (n)=>{
         rval = rval*i
     return rval
 }
+
+//factorial implementation

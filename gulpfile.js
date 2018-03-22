@@ -7,6 +7,21 @@ rename = require('gulp-rename'),
 notify = require('gulp-notify'),
 del = require('del'),
 livereload = require('gulp-livereload')
+webserver = require('gulp-webserver')
+
+gulp.task('serve', ()=>{
+    gulp.src('public/html')
+    .pipe(webserver({
+        livereload: true,
+        directoryListing: false,
+        open: true,
+        host: 'localhost',
+        port: 8080,
+        fallback: 'index.min.html'
+    }))
+})
+
+gulp.task('default', ['watch', 'serve'])
 
 gulp.task('minify-html', ()=>{
     gulp.src('./assets/template/*.html')
@@ -33,6 +48,13 @@ gulp.task('minify-js', ()=>{
     .pipe(rename({suffix:'.min'}))
     .pipe(gulp.dest('./public/js/'))
     .pipe(notify({message:'ES6 compilation and minification completed'}))
+})
+
+gulp.task('watch', ()=>{
+    livereload.listen()
+    gulp.watch('assets/template/**/*.html', ['minify-html']).on('change', livereload.changed)
+    gulp.watch('assets/js/**/*.js', ['minify-js']).on('change', livereload.changed)
+    gulp.watch('assets/stylus/css/**/*.css', ['minify-css']).on('change', livereload.changed)
 })
 
 gulp.task('optimize', ()=>{
