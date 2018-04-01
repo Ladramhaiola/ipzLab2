@@ -113,3 +113,74 @@ watcher.on('change', (event) => {
     console.log('File ' + event.path + ' was ' + event.type + ', running tasks...')
 })
 ```
+
+## Рабочий пример
+
+Зависимости
+
+```javascript
+var gulp = require('gulp')
+var minHtml = require('gulp-minify-html')
+var minCss = require('gulp-minify-css')
+var babel = require('gulp-babel-minify')
+var concat = require('gulp-concat')
+var rename = require('gulp-rename')
+```
+
+Препроцессинг, минификация и конкатенация CSS файлов
+
+```javascript
+gulp.task('styles', () => {
+    return gulp.src('./assets/stylus/*.styl')
+        .pipe(stylus())
+        .pipe(minCss())
+        .pipe(concat('style.css'))
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest('./public'))
+})
+```
+
+То же самое с JS + (ES6 -> ES5)
+
+```javascript
+gulp.task('js', ()=>{
+    return gulp.src('./assets/js/*.js')
+        .pipe(babel())
+        .pipe(concat('app.js'))
+        .pipe(rename({suffix:'.min'}))
+        .pipe(gulp.dest('./public'))
+        .pipe(notify({message:'ES6 compilation and minification completed'}))
+})
+```
+
+Миникация HTML + пример работы
+
+- gulp.debug() выводит информацию о происходящем
+- ignore.exclude(pattern) не пропускает дальше в поток файлы соответствующие паттерну
+
+```javascript
+gulp.task('html', ()=>{
+    return gulp.src('./assets/template/*.html') // read all files matching given pattern
+        .pipe(debug({title: 'src'}))            // show what is going on
+        .pipe(ignore.exclude('*.min.html'))     // ignore already min files
+        .pipe(minifyHtml())
+        .pipe(debug({title: 'minify'}))
+        .pipe(concat('index.html'))          // compile all html files to single
+        .pipe(debug({title: 'concat'}))
+        .pipe(rename({suffix: '.min'}))      // fname +.min +.html
+        .pipe(gulp.dest('./public'))         // write result to destination folder
+})
+```
+
+Пример задачи которая запускает список других задач
+
+```javascript
+gulp.task('optimize', ()=>{
+    gulp.start('styles', 'js', 'html')
+})
+
+gulp.task('clean', ()=>{
+    return del('{public,build}/*')
+})
+```
+
