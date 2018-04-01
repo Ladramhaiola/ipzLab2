@@ -63,7 +63,7 @@ gulp.src('assets/*.js')
     .pipe(gulp.dest('./public'))
 ```
 
-Данный код считывает все файлы в папке **assets** с расширением **.js**\
+Данный код считывает все файлы в папке **assets** с расширением **.js**
 
 **Опции** [Object]:
 Gulp поддерживает все опции поддерживаемые **node-glob**
@@ -84,4 +84,32 @@ gulp.src('assets/*.js')
     .pipe(gulp.dest('public/minified_js'))
     .pipe(// can continue)
     ...
+```
+
+**path** [string] или функция которая возвращает строку
+
+### gulp.task(_name[,dependencies, function]_)
+
+Создает задачу
+
+```javascript
+gulp.task('minify-js', ['babel'], () => {
+    return gulp.src('build/es5/app.js')
+        .pipe(uglify())
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest('public/minified_js'))
+})
+```
+
+Данный код создает задачу **'minify-js'**, поскольку в зависимостях указана задача **'babel'**, она будет выполнена перед запуском **'minify-js'**. Функция реализует операции задачи. Функция обработки должна возвращать Promise, callback или поток.
+
+### gulp.watch(_glob[,options],tasks_)
+
+Наблюдает за файлом и выполняет указанное действие когда в файл вносят изменения
+
+```javascript
+let watcher = gulp.watch('assets/*.js', ['minify-js'])
+watcher.on('change', (event) => {
+    console.log('File ' + event.path + ' was ' + event.type + ', running tasks...')
+})
 ```
