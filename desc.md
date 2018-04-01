@@ -184,3 +184,27 @@ gulp.task('clean', ()=>{
 })
 ```
 
+gulp.watch() + Лайврелоад
+
+```javascript
+gulp.task('watch', ()=>{ // recompile files on changes and livereload them
+    livereload.listen()
+    gulp.watch('assets/template/**/*.html', ['html']).on('change', livereload.changed)
+    gulp.watch('assets/js/**/*.js', ['js']).on('change', livereload.changed)
+    gulp.watch('assets/stylus/*.styl', ['styles']).on('change', livereload.changed)
+})
+
+gulp.task('serve', ()=>{
+    return gulp.src('public')
+        .pipe(webserver({
+            livereload: true,
+            directoryListing: false,
+            open: true,
+            host: 'localhost',
+            port: 8080,
+            fallback: 'index.min.html'
+        }))
+})
+
+gulp.task('default', ['watch', 'serve'])
+```
