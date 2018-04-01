@@ -73,3 +73,15 @@ gulp.src('assets/*.js', {since: *somedate*})
 ```
 
 Например, в таком случае **src** считает только файлы модифицированные после указанной даты *'somedate'*
+
+### gulp.dest(_path[,options]_)
+
+Записывает файлы с потока в указанное место, несуществующие папки создаются.
+
+```javascript
+gulp.src('assets/*.js')
+    .pipe(uglify())
+    .pipe(gulp.dest('public/minified_js'))
+    .pipe(// can continue)
+    ...
+```
